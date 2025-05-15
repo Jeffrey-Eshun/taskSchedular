@@ -7,16 +7,15 @@ import { TaskDetailsComponent } from './pages/task-details/task-details.componen
 
 
 const routes: Routes = [
-  {path: 'tasks', component:TasksComponent},
-  {path: '', component:SigninComponent},
-  {path: 'signup', component:SignupComponent},
-  {path: 'tasks/id', component:TaskDetailsComponent},
-  {path: "**", component:TasksComponent},
-
+  { path:'tasks', component:TasksComponent },
+  { path: '', component:SigninComponent },
+  { path:'signup', component:SignupComponent },
+  { path: 'tasks/:id', component:TaskDetailsComponent },
+  { path:"**", component:TasksComponent }
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule],
+  exports: [RouterModule]
 })
 export class AppRoutingModule { }

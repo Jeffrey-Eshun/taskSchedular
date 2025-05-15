@@ -38,7 +38,7 @@
             ],
             "styles": [
               "src/styles.css",
-              "src/bootstrap.css.css"
+              "src/bootstrap.css"
             ],
             "scripts": []
           },

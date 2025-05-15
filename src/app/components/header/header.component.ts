@@ -1,52 +1,48 @@
-import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
-
-
-@Injectable({
-  providedIn: 'root'
+import { Component, inject, OnInit } from '@angular/core';
+import { AuthService } from '../../services/auth.service';
+@Component({
+  selector: 'app-header',
+  standalone: false,
+  templateUrl: './header.component.html',
+  styleUrl: './header.component.css'
 })
-export class AuthService {
-  private http = inject(HttpClient);
-  private readonly apiUrl = 'https://donzytodo.pythonanywhere.com/auth';
+export class HeaderComponent implements OnInit {
+  authService = inject(AuthService);
+  user:any
+  isAuthenticated:boolean = false;
 
-  user = new BehaviorSubject<any>(null);
-  isLoggedIn = new BehaviorSubject<boolean>(false);
-  user$ = this.user.asObservable();
-  isLoggedIn$ = this.isLoggedIn.asObservable();
+  ngOnInit() {
+    this.authService.isLoggedIn$.subscribe((isLoggedIn) => {
+      this.isAuthenticated = isLoggedIn;
+    });
+
+    this.authService.getUser().subscribe({
+      next: (response:any) => {
+        this.user = response.user;
+        console.log("Response from header component:" , response.user.username);
+      },
+      error: (error) =>{
+        console.log(error);
+
+      }
+    });
 
 
-  signin(data:any){
-    return this.http.post(`${this.apiUrl}/signin/`, data, {
-      withCredentials:true
-    }).pipe(
-      tap(()=>{
-        this.isLoggedIn.next(true);
-      })
-    )
   }
 
-  getUser(){
-    return this.http.get(`${this.apiUrl}/get_user/`, {
-      withCredentials:true
-    }).pipe(
-      tap((user:any)=>{
-        this.isLoggedIn.next(true)
-        this.user.next(user);
-      })
-    )
-  }
+
 
   logOut(){
-    return this.http.post(`${this.apiUrl}/logout/`, {},  {
-      withCredentials:true
-      }).pipe(
-        tap(()=>{
-          this.user.next(null);
-          this.isLoggedIn.next(false);
-        })
-      )
-  }
+    this.authService.logOut().subscribe({
+      next:(response:any)=>{
+        console.log(response);
+      },
+      error: (error) =>{
+        console.log(error);
 
+      }
+    })
+
+  }
 
 }

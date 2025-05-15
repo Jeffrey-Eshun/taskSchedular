@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, tap } from 'rxjs';
 
 
 @Injectable({
@@ -31,13 +31,14 @@ export class AuthService {
       withCredentials:true
     }).pipe(
       tap((user:any)=>{
+        this.isLoggedIn.next(true)
         this.user.next(user);
       })
     )
   }
 
   logOut(){
-    return this.http.get(`${this.apiUrl}/logout/`, {
+    return this.http.post(`${this.apiUrl}/logout/`, {},  {
       withCredentials:true
       }).pipe(
         tap(()=>{
